@@ -114,10 +114,11 @@ void exibirElementos()
 
 void inserirElemento()
 {
-	// aloca memoria dinamicamente para o novo elemento
+	// Aloca memória dinamicamente para o novo elemento
 	NO* novo = (NO*)malloc(sizeof(NO));
 	if (novo == NULL)
 	{
+		cout << "Erro ao alocar memória para o novo elemento.\n";
 		return;
 	}
 
@@ -127,18 +128,48 @@ void inserirElemento()
 
 	if (primeiro == NULL)
 	{
+		// Caso a lista esteja vazia, o novo nó se torna o primeiro e o último elemento
 		primeiro = novo;
+		ultimo = primeiro;
+		cout << "Elemento inserido com sucesso.\n";
+	}
+	else if (novo->valor < primeiro->valor)
+	{
+		// Caso o novo nó seja menor que o primeiro elemento, insere no início
+		novo->prox = primeiro;
+		primeiro = novo;
+		cout << "Elemento inserido com sucesso.\n";
 	}
 	else
 	{
-		// procura o final da lista
-		NO* aux = primeiro;
-		while (aux->prox != NULL) {
-			aux = aux->prox;
+		NO* anterior = NULL;
+		NO* atual = primeiro;
+
+		// Encontra a posição correta para inserção mantendo a ordem
+		while (atual != NULL && novo->valor > atual->valor)
+		{
+			anterior = atual;
+			atual = atual->prox;
 		}
-		aux->prox = novo;
+
+		// Verifica se o elemento já existe na lista
+		if (atual != NULL && novo->valor == atual->valor)
+		{
+			cout << "Elemento ja existe na lista. Nao foi inserido.\n";
+			free(novo); // Libera a memória alocada para o novo nó
+			return;
+		}
+
+		// Insere o novo nó na posição correta
+		anterior->prox = novo;
+		novo->prox = atual;
+		if (atual == NULL)
+			ultimo = novo;
+
+		cout << "Elemento inserido com sucesso.\n";
 	}
 }
+
 
 void excluirElemento()
 {
